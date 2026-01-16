@@ -1,5 +1,6 @@
 ---
-
+import Header from "../components/Header.astro";
+import Layout from "../layouts/Layout.astro";
 ---
 
 <!doctype html>
@@ -11,6 +12,12 @@
         <title>Offres</title>
     </head>
     <body>
-        <h1>Offres</h1>
+        <header>
+            <Layout titre="Offres">
+                <h1>Offres</h1>
+             <!-- ou "Offres" pour la page des offres -->
+            </Layout>
+           
+        </header>
     </body>
 </html>
