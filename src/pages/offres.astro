@@ -1,30 +1,18 @@
 ---
-import Header from "../components/Header.astro";
 import Layout from "../layouts/Layout.astro";
 ---
 
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <title>Offres</title>
-    </head>
-    <body class="bg-gray-100 text-gray-800">
-        <header>
-            <Layout titre="Offres">
-                <h1 class="text-3xl font-bold mb-4">Offres</h1>
-            </Layout>
-        </header>
-        <main class="p-4">
-            <section class="bg-white rounded-lg shadow p-6">
-                <h2 class="text-2xl font-semibold mb-2">Nos Offres</h2>
+<Layout titre="Offres">
+    <section class="bg-gray-100 py-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-3xl font-bold mb-8 text-gray-800">Nos Offres</h1>
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-2xl font-semibold mb-2">Maisons disponibles</h2>
                 <p class="text-gray-600">
                     Découvrez nos offres de maisons disponibles.
                 </p>
                 <!-- Ajoutez ici les détails des offres -->
-            </section>
-        </main>
-    </body>
-</html>
+            </div>
+        </div>
+    </section>
+</Layout>
