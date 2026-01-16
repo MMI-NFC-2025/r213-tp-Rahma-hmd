@@ -11,13 +11,20 @@ import Layout from "../layouts/Layout.astro";
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <title>Offres</title>
     </head>
-    <body>
+    <body class="bg-gray-100 text-gray-800">
         <header>
             <Layout titre="Offres">
-                <h1>Offres</h1>
-             <!-- ou "Offres" pour la page des offres -->
+                <h1 class="text-3xl font-bold mb-4">Offres</h1>
             </Layout>
-           
         </header>
+        <main class="p-4">
+            <section class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-2xl font-semibold mb-2">Nos Offres</h2>
+                <p class="text-gray-600">
+                    Découvrez nos offres de maisons disponibles.
+                </p>
+                <!-- Ajoutez ici les détails des offres -->
+            </section>
+        </main>
     </body>
 </html>

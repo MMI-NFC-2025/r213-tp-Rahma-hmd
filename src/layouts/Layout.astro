@@ -5,14 +5,14 @@ import Header from "../components/Header.astro";
 const { titre } = Astro.props;
 ---
 
-<html lang="fr">
+<html lang="fr" class="bg-gray-50">
     <head>
         <meta charset="utf-8" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="viewport" content="width=device-width" />
         <title>{titre}</title>
     </head>
-    <body>
+    <body class="font-sans">
         <Header />
         <main>
             <slot />
