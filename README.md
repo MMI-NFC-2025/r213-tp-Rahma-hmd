@@ -1,3 +1,3 @@
 - Nom:Hamdi
 - Prénom:Rahma
-- URL vercel: https://gilded-profiterole-007bd1.netlify.app/ 
+- URL netlify : https://gilded-profiterole-007bd1.netlify.app/ 
