@@ -44,10 +44,22 @@ const offres = [
         <div class="max-w-6xl mx-auto">
             <h1 class="text-3xl font-bold mb-8 text-gray-800">Nos Offres</h1>
             <div class="bg-white rounded-lg shadow p-6">
-                <h2 class="text-2xl font-semibold mb-2">Maisons disponibles</h2>
-                <p class="text-gray-600">
-                    Découvrez nos offres de maisons disponibles.
-                </p>
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-2xl font-semibold mb-2">
+                            Maisons disponibles
+                        </h2>
+                        <p class="text-gray-600">
+                            Découvrez nos offres de maisons disponibles.
+                        </p>
+                    </div>
+                    <button
+                        id="favori-button"
+                        class="ml-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap"
+                    >
+                        Afficher les favoris
+                    </button>
+                </div>
                 <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {offres.map((offre) => <OffreCard offre={offre} />)}
                 </div>
@@ -55,3 +67,25 @@ const offres = [
         </div>
     </section>
 </Layout>
+
+<script>
+    const button = document.getElementById("favori-button");
+    let showOnlyFavorites = false;
+
+    button?.addEventListener("click", () => {
+        showOnlyFavorites = !showOnlyFavorites;
+        const offres = document.querySelectorAll(".offre");
+
+        offres.forEach((offre) => {
+            const isFavori = offre.dataset.favori === "true";
+
+            if (showOnlyFavorites) {
+                offre.style.display = isFavori ? "block" : "none";
+                button.textContent = "Afficher tout";
+            } else {
+                offre.style.display = "block";
+                button.textContent = "Afficher les favoris";
+            }
+        });
+    });
+</script>
