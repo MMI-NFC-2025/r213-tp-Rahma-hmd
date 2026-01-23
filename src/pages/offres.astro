@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import OffreCard from "../components/OffreCard.astro";
 
 const offres = [
     {
@@ -47,12 +48,8 @@ const offres = [
                 <p class="text-gray-600">
                     Découvrez nos offres de maisons disponibles.
                 </p>
-                <div class="mt-4">
-                    <ul class="list-disc list-inside space-y-1 text-gray-800">
-                        {offres.map((offre) => (
-                            <li>{offre.nomMaison}</li>
-                        ))}
-                    </ul>
+                <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {offres.map((offre) => <OffreCard offre={offre} />)}
                 </div>
             </div>
         </div>
