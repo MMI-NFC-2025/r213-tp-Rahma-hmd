@@ -69,23 +69,27 @@ const offres = [
 </Layout>
 
 <script>
+    //@ts-nocheck
     const button = document.getElementById("favori-button");
     let showOnlyFavorites = false;
 
     button?.addEventListener("click", () => {
         showOnlyFavorites = !showOnlyFavorites;
-        const offres = document.querySelectorAll(".offre");
+        const cartes = document.querySelectorAll(".offre-card");
+        console.log("Cartes trouvées:", cartes.length);
+        console.log("Mode favoris:", showOnlyFavorites);
 
-        offres.forEach((offre) => {
-            const isFavori = offre.dataset.favori === "true";
+        cartes.forEach((carte) => {
+            const isFavori = carte.dataset.favori === "true";
+            console.log("Carte favori:", carte.dataset.favori, "isFavori:", isFavori);
 
             if (showOnlyFavorites) {
-                offre.style.display = isFavori ? "block" : "none";
-                button.textContent = "Afficher tout";
+                carte.style.display = isFavori ? "block" : "none";
             } else {
-                offre.style.display = "block";
-                button.textContent = "Afficher les favoris";
+                carte.style.display = "block";
             }
         });
+
+        button.textContent = showOnlyFavorites ? "Afficher tout" : "Afficher les favoris";
     });
 </script>
