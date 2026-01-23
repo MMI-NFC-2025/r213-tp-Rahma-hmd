@@ -3,31 +3,44 @@ const { offre } = Astro.props;
 ---
 
 <article
-    class={`offre-card border border-gray-200 rounded-lg p-6 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer ${offre.favori ? "bg-yellow-100" : "bg-white"}`}
+    class={`offre-card border-l-4 rounded-xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer ${offre.favori ? "bg-green-100 border-green-700" : "bg-white border-green-400"}`}
     data-favori={offre.favori}
 >
-    <div class="flex items-start justify-between gap-3">
-        <div>
-            <h3 class="text-lg font-semibold text-gray-900">
+    <div class="flex items-start justify-between gap-3 mb-4">
+        <div class="flex-1">
+            <h3 class="text-xl font-bold text-green-900">
                 {offre.nomMaison}
             </h3>
-            <p class="text-sm text-gray-600">{offre.adresse}</p>
+            <p class="text-sm text-green-700 mt-1">{offre.adresse}</p>
         </div>
-        <p class="text-right text-indigo-600 text-base font-bold">
-            {offre.prix} €/mois
+        <p
+            class="text-right text-green-700 text-lg font-bold whitespace-nowrap ml-2"
+        >
+            {offre.prix}€
         </p>
     </div>
 
-    <div class="mt-3 flex gap-4 text-sm text-gray-700">
-        <span>{offre.surface} m²</span>
-        <span>{offre.nbChambres} ch.</span>
-        <span>{offre.nbSdb} sdb</span>
+    <hr class="border-green-300 my-3" />
+
+    <div class="grid grid-cols-3 gap-3 text-sm">
+        <div class="text-center">
+            <p class="text-green-700 font-bold">{offre.surface}</p>
+            <p class="text-green-700 text-xs">m²</p>
+        </div>
+        <div class="text-center border-l border-r border-green-300">
+            <p class="text-green-700 font-bold">{offre.nbChambres}</p>
+            <p class="text-green-700 text-xs">chambres</p>
+        </div>
+        <div class="text-center">
+            <p class="text-green-700 font-bold">{offre.nbSdb}</p>
+            <p class="text-green-700 text-xs">sdb</p>
+        </div>
     </div>
 
     <button
-        class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm transition-colors"
+        class="mt-4 w-full bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-colors"
     >
-        {offre.favori ? "Retirer des favoris" : "Ajouter aux favoris"}
+        {offre.favori ? "★ Favori" : "☆ Ajouter aux favoris"}
     </button>
 </article>
 
@@ -39,8 +52,10 @@ const { offre } = Astro.props;
             const isFavori = card.dataset.favori === "true";
             card.dataset.favori = isFavori ? "false" : "true";
             console.log(card.dataset.favori);
-            card.classList.toggle("bg-yellow-100");
+            card.classList.toggle("bg-green-100");
             card.classList.toggle("bg-white");
+            card.classList.toggle("border-green-700");
+            card.classList.toggle("border-green-400");
         });
     });
 </script>
