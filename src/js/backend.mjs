@@ -17,7 +17,9 @@ export async function oneID(id) {
     const record = await pb.collection('Maison').getOne(id);
     return record;
 }
-
+export async function getImageUrl(record, recordImage) {
+    return pb.files.getUrl(record, recordImage);
+}
 export async function allMaisonsFavori() {
     const records = await pb.collection('Maison').getFullList({ filter: 'favoris = true' });
     return records;
