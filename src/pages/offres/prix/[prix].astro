@@ -1,0 +1,35 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import OffreCard from "../../../components/OffreCard.astro";
+import { getOffreByPrix } from "../../../../backend";
+
+const { prix } = Astro.params;
+const prixValue = Number(prix);
+const hasValidPrix = Number.isFinite(prixValue);
+const offres = hasValidPrix ? await getOffreByPrix(prixValue) : [];
+---
+
+<Layout titre="Offres par prix">
+    <section class="bg-gray-100 py-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-3xl font-bold mb-4 text-gray-800">
+                Maisons avec un prix superieur a {200000} EUR
+            </h1>
+            {!hasValidPrix ? (
+                <p class="text-gray-600">
+                    Le parametre de prix est invalide.
+                </p>
+            ) : offres.length === 0 ? (
+                <p class="text-gray-600">
+                    Aucune offre ne correspond a ce critere.
+                </p>
+            ) : (
+                <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {offres.map((offre) => (
+                        <OffreCard offre={offre} />
+                    ))}
+                </div>
+            )}
+        </div>
+    </section>
+</Layout>

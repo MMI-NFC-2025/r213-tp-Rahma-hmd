@@ -15,3 +15,16 @@ export async function bySurface(s) {
     const record = await pb.collection('Maison').getFullList({ filter: `superficie > ${s}` });
     return record;
 }
+
+
+export async function getOffreByPrix(p) {
+    try {
+        const records = await pb
+            .collection('Maison')
+            .getFullList({ filter: `Prix > ${p}` });
+        return records;
+    } catch (error) {
+        console.log('Une erreur est survenue en lisant les maisons', error);
+        return [];
+    }
+}
