@@ -10,3 +10,8 @@ export async function getOffre(id) {
         return null;
     }
 }
+
+export async function bySurface(s) {
+    const record = await pb.collection('Maison').getFullList({ filter: `superficie > ${s}` });
+    return record;
+}
