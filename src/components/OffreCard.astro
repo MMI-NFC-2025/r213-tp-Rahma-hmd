@@ -65,6 +65,12 @@ import PbImage from "./PbImage.astro";
         >
             {offre.favori ? "★ Favori" : "☆ Ajouter aux favoris"}
         </button>
+        <a
+            href={`/offres/${offre.id}`}
+            class="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+        >
+            Voir plus
+        </a>
     </div>
 </article>
 
