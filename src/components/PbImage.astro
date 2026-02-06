@@ -1,6 +1,5 @@
 ---
 import { getImageUrl } from "../js/backend.mjs";
-import { Image } from "astro:assets";
 
 const { record, recordImage } = Astro.props;
 
@@ -9,10 +8,11 @@ const imageURL = await getImageUrl(record, recordImage);
 
 {
     imageURL && (
-        <Image
+        <img
             src={imageURL}
             alt={record.nomMaison || "image"}
-            inferSize={true}
+            loading="lazy"
+            decoding="async"
         />
     )
 }

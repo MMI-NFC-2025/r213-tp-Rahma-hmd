@@ -1,12 +1,14 @@
 ---
 const { offre } = Astro.props;
+import PbImage from "./PbImage.astro";
 ---
 
 <article
     class={`offre-card border-l-4 rounded-xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer ${offre.favori ? "bg-green-100 border-green-700" : "bg-white border-green-400"}`}
     data-favori={offre.favori}
 >
-    <div class="flex items-start justify-between gap-3 mb-4">
+    <PbImage record={offre} recordImage={offre.image[0]} />
+       <div class="flex items-start justify-between gap-3 mb-4">
         <div class="flex-1">
             <h3 class="text-xl font-bold text-green-900">
                 {offre.nomMaison}
