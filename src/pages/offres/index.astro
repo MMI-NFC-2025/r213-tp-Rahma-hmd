@@ -6,6 +6,7 @@ import { addOffre } from "../../../backend";
 
 let message = "";
 let Offres = [];
+let isPrixFiltered = false;
 
 const normalizePrix = (value: unknown) => {
     if (typeof value === "number") return value;
@@ -26,6 +27,7 @@ if (Astro.request.method === "POST") {
         const maxPrix = Number(data.get("maxPrix"));
 
         if (minPrix > 0 && maxPrix > 0 && maxPrix > minPrix) {
+            isPrixFiltered = true;
             const toutesLesOffres = await backendApi.getOffres();
             Offres = toutesLesOffres.filter((offre: any) => {
                 const prix = normalizePrix(offre.prix ?? offre.Prix);
@@ -75,6 +77,16 @@ if (Astro.request.method === "POST") {
                         value="Filtrer par prix"
                         class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors cursor-pointer"
                     />
+                    {
+                        isPrixFiltered && (
+                            <a
+                                href="/offres"
+                                class="px-4 py-2 bg-white text-slate-700 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors"
+                            >
+                                Réinitialiser les filtres
+                            </a>
+                        )
+                    }
                 </form>
                 {
                     message && (
