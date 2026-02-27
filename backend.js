@@ -28,3 +28,20 @@ export async function getOffreByPrix(p) {
         return [];
     }
 }
+
+
+export async function addOffre(house) {
+    try {
+        await pb.collection('Maison').create(house);
+        return {
+            success: true,
+            message: 'Offre ajoutée avec succès'
+        };
+    } catch (error) {
+        console.log('Une erreur est survenue en ajoutant la maison', error);
+        return {
+            success: false,
+            message: 'Une erreur est survenue en ajoutant la maison'
+        };
+    }
+}

@@ -2,6 +2,14 @@
 import Layout from "../../layouts/Layout.astro";
 import OffreCard from "../../components/OffreCard.astro";
 import { getOffres } from "../../js/backend.mjs";
+import { addOffre } from "../../../backend";
+
+let message = "";
+if (Astro.request.method === "POST") {
+    const formData = await Astro.request.formData();
+    const response = await addOffre(formData);
+    message = response.message;
+}
 
 const offres = await getOffres();
 ---
@@ -25,7 +33,7 @@ const offres = await getOffres();
                             href="/offres/surface/50"
                             class="px-4 py-2 bg-white text-slate-700 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors whitespace-nowrap"
                         >
-                           Maison avec surface superieur 80 m2
+                            Maison avec surface superieur 80 m2
                         </a>
                         <a
                             href="/offres/prix/200000"
@@ -41,9 +49,67 @@ const offres = await getOffres();
                         </button>
                     </div>
                 </div>
+                <div class="mb-6 rounded-lg border border-slate-200 p-4">
+                    <h2 class="text-lg font-semibold">Ajouter une offre</h2>
+                    {
+                        message && (
+                            <p class="mt-2 rounded-md bg-slate-100 px-3 py-2 text-sm text-slate-700">
+                                {message}
+                            </p>
+                        )
+                    }
+                    <form
+                        action="/offres"
+                        method="POST"
+                        enctype="multipart/form-data"
+                        class="mt-3 grid gap-3"
+                    >
+                        <input
+                            type="text"
+                            name="nomMaison"
+                            placeholder="Nom de la maison"
+                            required
+                            class="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                        <input
+                            type="number"
+                            name="prix"
+                            placeholder="Prix"
+                            class="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                        <input
+                            type="number"
+                            name="nb_sdb"
+                            placeholder="Nombre de salles de bain"
+                            class="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                        <input
+                            type="number"
+                            name="nb_chambre"
+                            placeholder="Nombre de chambres"
+                            class="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                        <input
+                            type="number"
+                            name="superficie"
+                            placeholder="Superficie"
+                            class="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                        <input
+                            type="file"
+                            name="image"
+                            class="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                        <button
+                            type="submit"
+                            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                        >
+                            Ajouter
+                        </button>
+                    </form>
+                </div>
                 <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {offres.map((offre) => <OffreCard offre={offre} />)}
-                    
                 </div>
             </div>
         </div>
