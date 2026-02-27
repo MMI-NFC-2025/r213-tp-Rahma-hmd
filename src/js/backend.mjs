@@ -35,6 +35,19 @@ export async function bySurface(s) {
     return record;
 }
 
+export async function filterByPrix(minPrix, maxPrix) {
+    try {
+        const records = await pb.collection('Maison').getFullList({ sort: '-created' });
+        return records.filter((record) => {
+            const prixValue = Number(record.prix ?? record.Prix);
+            return Number.isFinite(prixValue) && prixValue >= minPrix && prixValue <= maxPrix;
+        });
+    } catch (error) {
+        console.log('Une erreur est survenue en filtrant les maisons par prix', error);
+        return [];
+    }
+}
+
 export async function surfaceORprice(s, p) {
     const record = await pb.collection('Maison').getFullList({ filter: `superficie  ${s} || Prix < ${p}` });
     return record;

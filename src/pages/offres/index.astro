@@ -1,17 +1,51 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import OffreCard from "../../components/OffreCard.astro";
-import { getOffres } from "../../js/backend.mjs";
+import * as backendApi from "../../js/backend.mjs";
 import { addOffre } from "../../../backend";
 
 let message = "";
-if (Astro.request.method === "POST") {
-    const formData = await Astro.request.formData();
-    const response = await addOffre(formData);
-    message = response.message;
-}
+let Offres = [];
 
-const offres = await getOffres();
+const normalizePrix = (value: unknown) => {
+    if (typeof value === "number") return value;
+    if (typeof value !== "string") return NaN;
+    const cleaned = value.replace(/[^\d,.-]/g, "").replace(",", ".");
+    return Number(cleaned);
+};
+
+if (Astro.request.method === "POST") {
+    const data = await Astro.request.formData();
+
+    if (data.has("nomMaison")) {
+        const response = await addOffre(data);
+        message = response.message;
+        Offres = await backendApi.getOffres();
+    } else {
+        const minPrix = Number(data.get("minPrix"));
+        const maxPrix = Number(data.get("maxPrix"));
+
+        if (minPrix > 0 && maxPrix > 0 && maxPrix > minPrix) {
+            const toutesLesOffres = await backendApi.getOffres();
+            Offres = toutesLesOffres.filter((offre: any) => {
+                const prix = normalizePrix(offre.prix ?? offre.Prix);
+                return (
+                    Number.isFinite(prix) && prix >= minPrix && prix <= maxPrix
+                );
+            });
+            if (Offres.length === 0) {
+                message = `Pas d'offres entre ${minPrix}€ et ${maxPrix}€`;
+            } else {
+                message = `Liste des offres entre ${minPrix}€ et ${maxPrix}€`;
+            }
+        } else {
+            message = "Veuillez entrer des valeurs valides pour le prix.";
+            Offres = await backendApi.getOffres();
+        }
+    }
+} else {
+    Offres = await backendApi.getOffres();
+}
 ---
 
 <Layout titre="Offres">
@@ -19,6 +53,36 @@ const offres = await getOffres();
         <div class="max-w-6xl mx-auto">
             <h1 class="text-3xl font-bold mb-8 text-gray-800">Nos Offres</h1>
             <div class="bg-white rounded-lg shadow p-6">
+                <form
+                    action="/offres"
+                    method="POST"
+                    class="mb-6 flex flex-wrap gap-3"
+                >
+                    <input
+                        type="number"
+                        name="minPrix"
+                        placeholder="Prix minimum"
+                        class="p-2 border border-gray-300 rounded-md"
+                    />
+                    <input
+                        type="number"
+                        name="maxPrix"
+                        placeholder="Prix maximum"
+                        class="p-2 border border-gray-300 rounded-md"
+                    />
+                    <input
+                        type="submit"
+                        value="Filtrer par prix"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors cursor-pointer"
+                    />
+                </form>
+                {
+                    message && (
+                        <p class="mb-4 rounded-md bg-slate-100 px-3 py-2 text-sm text-slate-700">
+                            {message}
+                        </p>
+                    )
+                }
                 <div class="flex items-center justify-between mb-6">
                     <div>
                         <h2 class="text-2xl font-semibold mb-2">
@@ -53,13 +117,6 @@ const offres = await getOffres();
                     <summary class="cursor-pointer text-lg font-semibold">
                         Ajouter une offre
                     </summary>
-                    {
-                        message && (
-                            <p class="mt-2 rounded-md bg-slate-100 px-3 py-2 text-sm text-slate-700">
-                                {message}
-                            </p>
-                        )
-                    }
                     <form
                         action="/offres"
                         method="POST"
@@ -111,7 +168,7 @@ const offres = await getOffres();
                     </form>
                 </details>
                 <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {offres.map((offre) => <OffreCard offre={offre} />)}
+                    {Offres.map((offre: any) => <OffreCard offre={offre} />)}
                 </div>
             </div>
         </div>

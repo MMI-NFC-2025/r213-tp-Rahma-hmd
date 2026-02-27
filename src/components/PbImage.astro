@@ -10,7 +10,7 @@ const imageURL = await getImageUrl(record, recordImage);
     imageURL && (
         <img
             src={imageURL}
-            alt={record.nomMaison || "image"}
+            alt={record.nomMaison ?? record.Nom ?? "image"}
             width={width}
             height={height}
             loading="lazy"
