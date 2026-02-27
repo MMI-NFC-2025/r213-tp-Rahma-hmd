@@ -1,28 +1,40 @@
 ---
 const { offre } = Astro.props;
 import PbImage from "./PbImage.astro";
+const isFavori = Boolean(offre.favori ?? offre.favoris);
+const nextFavoriValue = isFavori ? "false" : "true";
 ---
 
 <article
-    class={`offre-card group overflow-hidden rounded-2xl border bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl ${offre.favori ? "border-green-500" : "border-slate-200"}`}
-    data-favori={offre.favori}
+    class={`offre-card group overflow-hidden rounded-2xl border bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl ${isFavori ? "border-green-500" : "border-slate-200"}`}
+    data-favori={isFavori}
 >
-    <div class="relative">
+    <div class="relative aspect-video overflow-hidden bg-slate-100">
         <PbImage
             record={offre}
             recordImage={offre.image[0]}
             width={640}
             height={420}
+            className="h-full w-full object-cover"
         />
-        <div
-            class={`absolute left-4 top-4 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${offre.favori ? "bg-green-600 text-white" : "bg-white/90 text-slate-700"}`}
-        >
-            {offre.favori ? "★ Favori" : "☆ Coup de coeur"}
-        </div>
+        <form action="/offres" method="POST" class="absolute left-4 top-4 z-10">
+            <input type="hidden" name="toggleFavoriId" value={offre.id} />
+            <input
+                type="hidden"
+                name="toggleFavoriValue"
+                value={nextFavoriValue}
+            />
+            <button
+                type="submit"
+                class={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold cursor-pointer ${isFavori ? "bg-green-600 text-white" : "bg-white/90 text-slate-700"}`}
+            >
+                {isFavori ? "★ Favoris" : "☆ Favoris"}
+            </button>
+        </form>
     </div>
 
-    <div class="flex flex-col gap-4 p-5 sm:p-6">
-        <div class="flex items-start justify-between gap-4">
+    <div class="flex flex-col gap-3 p-4 sm:p-5">
+        <div class="flex items-start justify-between gap-3">
             <div class="min-w-0">
                 <h3 class="text-lg font-semibold text-slate-900 sm:text-xl">
                     {offre.nomMaison ?? offre.Nom}
@@ -45,19 +57,19 @@ import PbImage from "./PbImage.astro";
         </div>
 
         <div class="grid grid-cols-3 divide-x divide-slate-200 text-center">
-            <div class="py-2">
+            <div class="py-1.5">
                 <p class="text-base font-semibold text-slate-900">
                     {offre.superficie ?? offre.surface}
                 </p>
                 <p class="text-xs text-slate-500">m²</p>
             </div>
-            <div class="py-2">
+            <div class="py-1.5">
                 <p class="text-base font-semibold text-slate-900">
                     {offre.nb_chambre ?? offre.nbChambres}
                 </p>
                 <p class="text-xs text-slate-500">chambres</p>
             </div>
-            <div class="py-2">
+            <div class="py-1.5">
                 <p class="text-base font-semibold text-slate-900">
                     {offre.nb_sdb ?? offre.nbSdb}
                 </p>
@@ -65,32 +77,27 @@ import PbImage from "./PbImage.astro";
             </div>
         </div>
 
-        <button
-            class="inline-flex w-full items-center justify-center rounded-xl border border-green-600/20 bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
-        >
-            {offre.favori ? "★ Favori" : "☆ Ajouter aux favoris"}
-        </button>
-        <a
-            href={`/offres/${offre.id}`}
-            class="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
-        >
-            Voir plus
-        </a>
+        <div class="relative z-10 flex flex-col gap-2">
+            <a
+                href={`/offres/${offre.id}`}
+                class="inline-flex w-full items-center justify-center rounded-xl border border-slate-300 bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+            >
+                Voir plus →
+            </a>
+            <form action="/offres" method="POST">
+                <input type="hidden" name="toggleFavoriId" value={offre.id} />
+                <input
+                    type="hidden"
+                    name="toggleFavoriValue"
+                    value={nextFavoriValue}
+                />
+                <button
+                    type="submit"
+                    class="inline-flex w-full items-center justify-center rounded-xl border border-green-600/20 bg-green-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 cursor-pointer"
+                >
+                    {isFavori ? "★ Favoris" : "☆ Favoris"}
+                </button>
+            </form>
+        </div>
     </div>
 </article>
-
-<script>
-    //@ts-nocheck
-    const cards = document.querySelectorAll(".offre-card");
-    cards.forEach((card) => {
-        card.addEventListener("click", () => {
-            const isFavori = card.dataset.favori === "true";
-            card.dataset.favori = isFavori ? "false" : "true";
-            console.log(card.dataset.favori);
-            card.classList.toggle("bg-green-100");
-            card.classList.toggle("bg-white");
-            card.classList.toggle("border-green-700");
-            card.classList.toggle("border-green-400");
-        });
-    });
-</script>

@@ -20,12 +20,13 @@ import PbImage from "../../components/PbImage.astro";
                 offre ? (
                     <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                         {offre.image?.length > 0 && (
-                            <div class="w-full bg-slate-100">
+                            <div class="w-full aspect-video overflow-hidden bg-slate-100">
                                 <PbImage
                                     record={offre}
                                     recordImage={offre.image[0]}
                                     width={1280}
                                     height={720}
+                                    className="h-full w-full object-cover"
                                 />
                             </div>
                         )}

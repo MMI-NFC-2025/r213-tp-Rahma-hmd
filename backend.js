@@ -1,5 +1,5 @@
 import PocketBase from 'pocketbase';
-const pb = new PocketBase('http://127.0.0.1:8090');  
+const pb = new PocketBase('http://127.0.0.1:8090');
 
 export async function getOffre(id) {
     try {
@@ -42,6 +42,30 @@ export async function addOffre(house) {
         return {
             success: false,
             message: 'Une erreur est survenue en ajoutant la maison'
+        };
+    }
+}
+
+export async function updateFavori(offreId, favoriValue) {
+    try {
+        const record = await pb.collection('Maison').getOne(offreId);
+        const payload = {};
+
+        if ('favori' in record) payload.favori = favoriValue;
+        if ('favoris' in record) payload.favoris = favoriValue;
+        if (Object.keys(payload).length === 0) payload.favori = favoriValue;
+
+        await pb.collection('Maison').update(offreId, payload);
+
+        return {
+            success: true,
+            message: favoriValue ? 'Maison ajoutée aux favoris' : 'Maison retirée des favoris'
+        };
+    } catch (error) {
+        console.log('Une erreur est survenue en mettant à jour le favori', error);
+        return {
+            success: false,
+            message: 'Une erreur est survenue lors de la mise à jour des favoris'
         };
     }
 }

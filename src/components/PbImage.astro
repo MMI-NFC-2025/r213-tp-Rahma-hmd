@@ -1,9 +1,16 @@
 ---
 import { getImageUrl } from "../js/backend.mjs";
 
-const { record, recordImage, width = 400, height = 300 } = Astro.props;
+const {
+    record,
+    recordImage,
+    width = 400,
+    height = 300,
+    className = "",
+} = Astro.props;
 
 const imageURL = await getImageUrl(record, recordImage);
+const finalClassName = className || "block w-full h-auto";
 ---
 
 {
@@ -13,6 +20,7 @@ const imageURL = await getImageUrl(record, recordImage);
             alt={record.nomMaison ?? record.Nom ?? "image"}
             width={width}
             height={height}
+            class={finalClassName}
             loading="lazy"
             decoding="async"
         />
