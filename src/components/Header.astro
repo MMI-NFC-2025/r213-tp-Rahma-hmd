@@ -1,5 +1,12 @@
+---
+import logoHabity from "../assets/Logohabity.svg";
+---
+
 <nav class="bg-green-800 shadow-lg">
-    <div class="max-w-7xl mx-auto px-4 py-3">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-6">
+        <a href="/" class="inline-block hover:opacity-80 transition-opacity">
+            <img src={logoHabity.src} alt="Logohabity" class="h-10" />
+        </a>
         <a
             href="/"
             class="text-lg font-bold text-white hover:text-green-200 transition-colors"
@@ -7,7 +14,7 @@
         >
         <a
             href="/offres"
-            class="ml-6 text-lg font-bold text-white hover:text-green-200 transition-colors"
+            class="text-lg font-bold text-white hover:text-green-200 transition-colors"
             >Offres</a
         >
     </div>
