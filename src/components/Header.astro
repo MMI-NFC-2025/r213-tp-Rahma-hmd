@@ -3,24 +3,115 @@ import logoHabity from "../assets/Logohabity.svg";
 ---
 
 <nav class="bg-green-800 shadow-lg">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-6">
-        <a href="/" class="inline-block hover:opacity-80 transition-opacity">
-            <img src={logoHabity.src} alt="Logohabity" class="h-10" />
-        </a>
-        <a
-            href="/"
-            class="text-lg font-bold text-white hover:text-green-200 transition-colors"
-            >Accueil</a
+    <div class="max-w-7xl mx-auto px-4 py-3">
+        <div class="flex items-center justify-between">
+            <a
+                href="/"
+                class="inline-block hover:opacity-80 transition-opacity"
+            >
+                <img
+                    src={logoHabity.src}
+                    alt="Logohabity"
+                    class="h-8 sm:h-10"
+                />
+            </a>
+
+            <!-- Menu desktop -->
+            <div class="hidden md:flex items-center gap-6">
+                <a
+                    href="/"
+                    class="text-base lg:text-lg font-bold text-white hover:text-green-200 transition-colors"
+                    >Accueil</a
+                >
+                <a
+                    href="/offres"
+                    class="text-base lg:text-lg font-bold text-white hover:text-green-200 transition-colors"
+                    >Offres</a
+                >
+                <a
+                    href="/agents"
+                    class="text-base lg:text-lg font-bold text-white hover:text-green-200 transition-colors"
+                    >Agents</a
+                >
+            </div>
+
+            <!-- Bouton hamburger mobile -->
+            <button
+                id="mobile-menu-button"
+                class="md:hidden p-2 text-white hover:text-green-200 transition-colors"
+                aria-label="Ouvrir le menu"
+                aria-expanded="false"
+            >
+                <svg
+                    id="menu-icon-open"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+                <svg
+                    id="menu-icon-close"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6 hidden"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Menu mobile -->
+        <div
+            id="mobile-menu"
+            class="hidden md:hidden mt-4 pb-2 border-t border-green-700 pt-4"
         >
-        <a
-            href="/offres"
-            class="text-lg font-bold text-white hover:text-green-200 transition-colors"
-            >Offres</a
-        >
-        <a
-            href="/agents"
-            class="text-lg font-bold text-white hover:text-green-200 transition-colors"
-            >Agents</a
-        >
+            <div class="flex flex-col gap-3">
+                <a
+                    href="/"
+                    class="text-base font-bold text-white hover:text-green-200 transition-colors py-2"
+                    >Accueil</a
+                >
+                <a
+                    href="/offres"
+                    class="text-base font-bold text-white hover:text-green-200 transition-colors py-2"
+                    >Offres</a
+                >
+                <a
+                    href="/agents"
+                    class="text-base font-bold text-white hover:text-green-200 transition-colors py-2"
+                    >Agents</a
+                >
+            </div>
+        </div>
     </div>
 </nav>
+
+<script>
+    const mobileMenuButton = document.getElementById("mobile-menu-button");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const menuIconOpen = document.getElementById("menu-icon-open");
+    const menuIconClose = document.getElementById("menu-icon-close");
+
+    mobileMenuButton?.addEventListener("click", () => {
+        const isExpanded =
+            mobileMenuButton.getAttribute("aria-expanded") === "true";
+
+        mobileMenuButton.setAttribute("aria-expanded", String(!isExpanded));
+        mobileMenu?.classList.toggle("hidden");
+        menuIconOpen?.classList.toggle("hidden");
+        menuIconClose?.classList.toggle("hidden");
+    });
+</script>

@@ -1,34 +1,127 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import OffreCard from "../components/OffreCard.astro";
+import { allMaisonsFavori } from "../js/backend.mjs";
+
+const favoris = await allMaisonsFavori();
 ---
 
 <Layout titre="Accueil">
 	<!-- Hero Section -->
 	<section
-		class="bg-gradient-to-r from-green-800 to-green-700 text-white py-20 px-4 overflow-hidden"
+		class="bg-gradient-to-r from-green-800 to-green-700 text-white py-12 sm:py-16 md:py-20 px-4 overflow-hidden"
 	>
 		<div class="max-w-6xl mx-auto text-center">
-			<h1 class="text-5xl font-bold mb-4">Agence Habity</h1>
-			<p class="text-xl mb-8 text-green-100">
+			<h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+				Agence Habity
+			</h1>
+			<p
+				class="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 text-green-100"
+			>
 				Trouvez votre propriété idéale
 			</p>
 			<a
 				href="/offres"
-				class="bg-white text-green-800 px-8 py-3 rounded-lg font-bold hover:bg-green-50 transition-colors shadow-lg"
+				class="inline-block bg-white text-green-800 px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg font-bold hover:bg-green-50 transition-colors shadow-lg text-sm sm:text-base"
 			>
 				Voir les offres
 			</a>
 		</div>
 	</section>
 
+	<!-- Carrousel des favoris -->
+	{
+		favoris.length > 0 && (
+			<section class="py-8 sm:py-12 px-4 bg-white">
+				<div class="max-w-6xl mx-auto">
+					<h2 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-green-900">
+						Nos coups de coeur
+					</h2>
+					<div class="relative">
+						<button
+							id="carousel-prev"
+							class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-green-700 text-white rounded-full p-2 shadow-lg hover:bg-green-800 transition-colors hidden md:block"
+							aria-label="Précédent"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-6 w-6"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M15 19l-7-7 7-7"
+								/>
+							</svg>
+						</button>
+						<div
+							id="carousel-container"
+							class="flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 px-1 sm:px-2"
+							style="scrollbar-width: thin;"
+						>
+							{favoris.map((offre: any) => (
+								<div class="snap-start shrink-0 w-[260px] sm:w-[300px] md:w-[340px]">
+									<OffreCard offre={offre} />
+								</div>
+							))}
+						</div>
+						<button
+							id="carousel-next"
+							class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-green-700 text-white rounded-full p-2 shadow-lg hover:bg-green-800 transition-colors hidden md:block"
+							aria-label="Suivant"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-6 w-6"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M9 5l7 7-7 7"
+								/>
+							</svg>
+						</button>
+					</div>
+				</div>
+			</section>
+		)
+	}
+
 	<!-- Content Section -->
-	<section class="py-16 px-4 bg-gray-50">
+	<section class="py-10 sm:py-16 px-4 bg-gray-50">
 		<div class="max-w-6xl mx-auto">
-			<h2 class="text-3xl font-bold mb-6 text-green-900">À propos</h2>
-			<p class="text-green-800 mb-4 text-lg">
+			<h2
+				class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-green-900"
+			>
+				À propos
+			</h2>
+			<p class="text-green-800 mb-4 text-base sm:text-lg">
 				Nous vous aider à trouver votre maison de rêve. Vente, achat, ou
 				location, nous sommes là pour vous.
 			</p>
 		</div>
 	</section>
 </Layout>
+
+<script>
+	const container = document.getElementById("carousel-container");
+	const prevBtn = document.getElementById("carousel-prev");
+	const nextBtn = document.getElementById("carousel-next");
+	const scrollAmount = 360;
+
+	prevBtn?.addEventListener("click", () => {
+		container?.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+	});
+
+	nextBtn?.addEventListener("click", () => {
+		container?.scrollBy({ left: scrollAmount, behavior: "smooth" });
+	});
+</script>
