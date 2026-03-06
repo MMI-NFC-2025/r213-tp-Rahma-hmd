@@ -2,15 +2,16 @@
 const { offre } = Astro.props;
 import PbImage from "./PbImage.astro";
 const isFavori = Boolean(offre.favori ?? offre.favoris);
-const nextFavoriValue = isFavori ? "false" : "true";
 ---
 
 <article
     class={`offre-card group overflow-hidden rounded-3xl bg-white shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${isFavori ? "ring-2 ring-green-500" : ""}`}
     data-favori={isFavori}
 >
-    <!-- Image avec bouton favori -->
-    <div class="relative mx-4 mt-4 overflow-hidden rounded-2xl aspect-[4/3] bg-slate-100">
+    <!-- Image -->
+    <div
+        class="relative mx-4 mt-4 overflow-hidden rounded-2xl aspect-[4/3] bg-slate-100"
+    >
         <PbImage
             record={offre}
             recordImage={offre.image[0]}
@@ -18,21 +19,6 @@ const nextFavoriValue = isFavori ? "false" : "true";
             height={480}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        <!-- Bouton favori en overlay -->
-        <button
-            type="button"
-            class="favoriteButton absolute top-3 right-3 p-2 rounded-full bg-white/90 backdrop-blur-sm shadow-md transition-all hover:scale-110 hover:bg-white"
-            data-offre={JSON.stringify(offre)}
-        >
-            <img
-                src={isFavori ? "/favorite_filled.png" : "/favorite.png"}
-                alt="favori"
-                id="favorite-icon"
-                class="w-5 h-5"
-                loading="lazy"
-                decoding="async"
-            />
-        </button>
     </div>
 
     <!-- Contenu -->
@@ -49,65 +35,153 @@ const nextFavoriValue = isFavori ? "false" : "true";
 
         <!-- Description -->
         <p class="text-sm text-slate-500 leading-relaxed mb-4 line-clamp-2">
-            {offre.adresse ?? "Belle maison située dans un quartier prisé, idéale pour une famille."}
+            {
+                offre.adresse ??
+                    "Belle maison située dans un quartier prisé, idéale pour une famille."
+            }
         </p>
 
         <!-- Stats en pills -->
         <div class="flex gap-3 mb-5">
             <div class="flex-1 bg-slate-100 rounded-2xl py-3 px-4 text-center">
                 <p class="text-xs text-slate-500 mb-0.5">Surface</p>
-                <p class="text-lg font-bold text-slate-900">{offre.superficie ?? offre.surface ?? "-"}</p>
+                <p class="text-lg font-bold text-slate-900">
+                    {offre.superficie ?? offre.surface ?? "-"}
+                </p>
             </div>
             <div class="flex-1 bg-slate-100 rounded-2xl py-3 px-4 text-center">
                 <p class="text-xs text-slate-500 mb-0.5">Chambres</p>
-                <p class="text-lg font-bold text-slate-900">{offre.nb_chambre ?? offre.nbChambres ?? "-"}</p>
+                <p class="text-lg font-bold text-slate-900">
+                    {offre.nb_chambre ?? offre.nbChambres ?? "-"}
+                </p>
             </div>
         </div>
 
-        <!-- Bouton principal -->
-        <a
-            href={`/offres/${offre.id}`}
-            class="block w-full py-4 bg-slate-900 text-white text-center font-semibold rounded-2xl transition-all hover:bg-slate-800 active:scale-[0.98]"
-        >
-            Voir le détail
-        </a>
+        <!-- Boutons -->
+        <div class="flex flex-col gap-3">
+            <a
+                href={`/offres/${offre.id}`}
+                class="block w-full py-4 bg-slate-900 text-white text-center font-semibold rounded-2xl transition-all hover:bg-slate-800 active:scale-[0.98]"
+            >
+                Voir le détail
+            </a>
+            <button
+                type="button"
+                class={`favoriteButton w-full py-3 flex items-center justify-center gap-2 font-semibold rounded-2xl transition-all active:scale-[0.98] ${isFavori ? "bg-green-600 text-white hover:bg-green-700" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}
+                data-offre={JSON.stringify(offre)}
+            >
+                <svg
+                    class="favorite-icon w-5 h-5"
+                    fill={isFavori ? "currentColor" : "none"}
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    ></path>
+                </svg>
+                <span class="favorite-text"
+                    >{
+                        isFavori ? "Retirer des favoris" : "Ajouter aux favoris"
+                    }</span
+                >
+            </button>
+        </div>
     </div>
 </article>
 
-<script>
-    //@ts-nocheck
-    import { setFavori } from "../../backend.js";
-    const favoriteButtons = document.querySelectorAll(".favoriteButton");
+<script is:inline>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Éviter d'attacher plusieurs fois les événements
+        if (window.favoriteButtonsInitialized) return;
+        window.favoriteButtonsInitialized = true;
 
-    favoriteButtons.forEach((button) => {
-        button.addEventListener("click", async (event) => {
+        document.body.addEventListener("click", async (event) => {
+            const btn = event.target.closest(".favoriteButton");
+            if (!btn) return;
+
             event.preventDefault();
             event.stopPropagation();
 
-            const offreData = JSON.parse(button.dataset.offre || "{}");
-            const newFavori = !Boolean(offreData.favori ?? offreData.favoris);
+            const offreData = JSON.parse(btn.dataset.offre || "{}");
+            const newFavori = !(offreData.favori || offreData.favoris);
 
-            await setFavori(offreData);
+            // Mise à jour dans PocketBase
+            const payload = {};
+            if ("favori" in offreData) payload.favori = newFavori;
+            if ("favoris" in offreData) payload.favoris = newFavori;
+            if (Object.keys(payload).length === 0) payload.favoris = newFavori;
 
-            const favIcon = button.querySelector("#favorite-icon");
-            if (favIcon) {
-                favIcon.src = newFavori
-                    ? "/favorite_filled.png"
-                    : "/favorite.png";
-            }
+            try {
+                const pb = new PocketBase("http://127.0.0.1:8090");
+                await pb.collection("Maison").update(offreData.id, payload);
 
-            offreData.favori = newFavori;
-            offreData.favoris = newFavori;
-            button.dataset.offre = JSON.stringify(offreData);
-
-            const card = button.closest(".offre-card");
-            if (card) {
-                card.dataset.favori = String(newFavori);
+                // Mise à jour du style du bouton
                 if (newFavori) {
-                    card.classList.add("ring-2", "ring-green-500");
+                    btn.classList.remove(
+                        "bg-slate-100",
+                        "text-slate-700",
+                        "hover:bg-slate-200",
+                    );
+                    btn.classList.add(
+                        "bg-green-600",
+                        "text-white",
+                        "hover:bg-green-700",
+                    );
                 } else {
-                    card.classList.remove("ring-2", "ring-green-500");
+                    btn.classList.remove(
+                        "bg-green-600",
+                        "text-white",
+                        "hover:bg-green-700",
+                    );
+                    btn.classList.add(
+                        "bg-slate-100",
+                        "text-slate-700",
+                        "hover:bg-slate-200",
+                    );
                 }
+
+                // Mise à jour de l'icône SVG
+                const favIcon = btn.querySelector(".favorite-icon");
+                if (favIcon) {
+                    favIcon.setAttribute(
+                        "fill",
+                        newFavori ? "currentColor" : "none",
+                    );
+                }
+
+                // Mise à jour du texte
+                const favText = btn.querySelector(".favorite-text");
+                if (favText) {
+                    favText.textContent = newFavori
+                        ? "Retirer des favoris"
+                        : "Ajouter aux favoris";
+                }
+
+                // Mise à jour des données
+                offreData.favori = newFavori;
+                offreData.favoris = newFavori;
+                btn.dataset.offre = JSON.stringify(offreData);
+
+                // Mise à jour du style de la card
+                const card = btn.closest(".offre-card");
+                if (card) {
+                    card.setAttribute("data-favori", String(newFavori));
+                    if (newFavori) {
+                        card.classList.add("ring-2", "ring-green-500");
+                    } else {
+                        card.classList.remove("ring-2", "ring-green-500");
+                    }
+                }
+            } catch (error) {
+                console.error(
+                    "Erreur lors de la mise à jour du favori:",
+                    error,
+                );
+                alert("Erreur: " + error.message);
             }
         });
     });

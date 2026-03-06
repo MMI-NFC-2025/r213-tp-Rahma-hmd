@@ -26,6 +26,9 @@ const { titre } = Astro.props;
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="viewport" content="width=device-width" />
         <title>{titre}</title>
+        <script
+            src="https://cdn.jsdelivr.net/npm/pocketbase@0.21.1/dist/pocketbase.umd.min.js"
+        ></script>
     </head>
     <body class="font-sans min-h-screen flex flex-col">
         <Header />

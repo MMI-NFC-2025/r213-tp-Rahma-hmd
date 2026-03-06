@@ -9,7 +9,7 @@ const favoris = await allMaisonsFavori();
 <Layout titre="Accueil">
 	<!-- Hero Section -->
 	<section
-		class="bg-gradient-to-r from-green-800 to-green-700 text-white py-12 sm:py-16 md:py-20 px-4 overflow-hidden"
+		class="bg-green-800/80 backdrop-blur-sm text-white py-12 sm:py-16 md:py-20 px-4 overflow-hidden"
 	>
 		<div class="max-w-6xl mx-auto text-center">
 			<h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
@@ -32,7 +32,7 @@ const favoris = await allMaisonsFavori();
 	<!-- Carrousel des favoris -->
 	{
 		favoris.length > 0 && (
-			<section class="py-8 sm:py-12 px-4 bg-white">
+			<section class="py-8 sm:py-12 px-4 bg-white/90 backdrop-blur-sm">
 				<div class="max-w-6xl mx-auto">
 					<h2 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-green-900">
 						Nos coups de coeur
@@ -96,7 +96,7 @@ const favoris = await allMaisonsFavori();
 	}
 
 	<!-- Content Section -->
-	<section class="py-10 sm:py-16 px-4 bg-gray-50">
+	<section class="py-10 sm:py-16 px-4 bg-white/80 backdrop-blur-sm">
 		<div class="max-w-6xl mx-auto">
 			<h2
 				class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-green-900"
@@ -104,8 +104,8 @@ const favoris = await allMaisonsFavori();
 				À propos
 			</h2>
 			<p class="text-green-800 mb-4 text-base sm:text-lg">
-				Nous vous aidons à trouver votre maison de rêve. Vente, achat, ou
-				location, nous sommes là pour vous.
+				Nous vous aidons à trouver votre maison de rêve. Vente, achat,
+				ou location, nous sommes là pour vous.
 			</p>
 		</div>
 	</section>
