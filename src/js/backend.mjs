@@ -57,3 +57,77 @@ export async function oneAgent(id) {
     const record = await pb.collection('Agent').getOne(id);
     return record;
 }
+
+export async function getAgents() {
+    try {
+        const records = await pb.collection('Agent').getFullList({
+            sort: '-created',
+        });
+        return records;
+    } catch (error) {
+        console.log('Une erreur est survenue en lisant la liste des agents', error);
+        return [];
+    }
+}
+
+export async function getOffresByAgentId(agentId) {
+    const relationFields = [
+        'agent',
+        'Agent',
+        'agentId',
+        'agent_id',
+        'id_agent',
+        'conseiller',
+        'vendeur',
+    ];
+
+    const offersById = new Map();
+
+    for (const field of relationFields) {
+        try {
+            const records = await pb.collection('Maison').getFullList({
+                sort: '-created',
+                filter: `${field} = "${agentId}"`,
+            });
+
+            for (const record of records) {
+                offersById.set(record.id, record);
+            }
+        } catch (error) {
+            // Ignore unknown-field filter errors and try the next field.
+        }
+    }
+
+    if (offersById.size > 0) {
+        return [...offersById.values()];
+    }
+
+    // Fallback: if no filter worked, scan all houses and match common relation fields in JS.
+    try {
+        const allOffres = await pb.collection('Maison').getFullList({
+            sort: '-created',
+        });
+
+        return allOffres.filter((offre) => {
+            const values = [
+                offre.agent,
+                offre.Agent,
+                offre.agentId,
+                offre.agent_id,
+                offre.id_agent,
+                offre.conseiller,
+                offre.vendeur,
+            ];
+
+            return values.some((value) => {
+                if (Array.isArray(value)) {
+                    return value.some((item) => String(item) === String(agentId));
+                }
+                return String(value) === String(agentId);
+            });
+        });
+    } catch (error) {
+        console.log("Une erreur est survenue en lisant les offres de l'agent", error);
+        return [];
+    }
+}

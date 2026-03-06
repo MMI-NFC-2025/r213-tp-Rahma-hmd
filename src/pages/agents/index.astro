@@ -1,0 +1,127 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getAgents, getImageUrl } from "../../js/backend.mjs";
+
+const agents = await getAgents();
+
+const getAgentName = (agent: any) => {
+    const byField = agent.nomComplet ?? agent.nom_complet ?? agent.nom;
+    if (byField) return byField;
+
+    const fullName = `${agent.prenom ?? ""} ${agent.nom ?? ""}`.trim();
+    if (fullName) return fullName;
+
+    return "Agent";
+};
+
+const getPhone = (agent: any) => {
+    return agent.telephone ?? agent.tel ?? agent.phone ?? "Non renseigné";
+};
+
+const getEmail = (agent: any) => {
+    return agent.email ?? "Non renseigné";
+};
+
+const getRole = (agent: any) => {
+    return agent.role ?? agent.poste ?? "Conseiller immobilier";
+};
+
+const getImageField = (agent: any) => {
+    if (Array.isArray(agent.image) && agent.image.length > 0)
+        return agent.image[0];
+    if (typeof agent.image === "string" && agent.image.length > 0)
+        return agent.image;
+    if (Array.isArray(agent.photo) && agent.photo.length > 0)
+        return agent.photo[0];
+    if (typeof agent.photo === "string" && agent.photo.length > 0)
+        return agent.photo;
+    if (Array.isArray(agent.avatar) && agent.avatar.length > 0)
+        return agent.avatar[0];
+    if (typeof agent.avatar === "string" && agent.avatar.length > 0)
+        return agent.avatar;
+    return null;
+};
+
+const agentsWithImage = await Promise.all(
+    agents.map(async (agent) => {
+        const imageField = getImageField(agent);
+        const imageUrl = imageField
+            ? await getImageUrl(agent, imageField)
+            : null;
+        return {
+            ...agent,
+            imageUrl,
+        };
+    }),
+);
+---
+
+<Layout titre="Agents">
+    <section class="bg-gray-100 py-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-3xl font-bold mb-2 text-gray-900">Nos agents</h1>
+            <p class="text-gray-600 mb-8">
+                Retrouvez les conseillers de l'agence et leurs coordonnees.
+            </p>
+
+            {
+                agentsWithImage.length === 0 ? (
+                    <div class="rounded-xl border border-slate-200 bg-white p-6 text-slate-700">
+                        Aucun agent disponible pour le moment.
+                    </div>
+                ) : (
+                    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        {agentsWithImage.map((agent) => (
+                            <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                                <div class="mb-4 h-52 w-full overflow-hidden rounded-xl bg-slate-100">
+                                    {agent.imageUrl ? (
+                                        <img
+                                            src={agent.imageUrl}
+                                            alt={getAgentName(agent)}
+                                            class="h-full w-full object-cover"
+                                            loading="lazy"
+                                            decoding="async"
+                                        />
+                                    ) : (
+                                        <div class="flex h-full w-full items-center justify-center text-slate-400">
+                                            Photo indisponible
+                                        </div>
+                                    )}
+                                </div>
+
+                                <h2 class="text-xl font-semibold text-slate-900">
+                                    {getAgentName(agent)}
+                                </h2>
+                                <p class="mt-1 text-sm font-medium text-green-700">
+                                    {getRole(agent)}
+                                </p>
+
+                                <dl class="mt-4 space-y-2 text-sm text-slate-700">
+                                    <div>
+                                        <dt class="font-semibold text-slate-900">
+                                            Email
+                                        </dt>
+                                        <dd>{getEmail(agent)}</dd>
+                                    </div>
+                                    <div>
+                                        <dt class="font-semibold text-slate-900">
+                                            Telephone
+                                        </dt>
+                                        <dd>{getPhone(agent)}</dd>
+                                    </div>
+                                </dl>
+
+                                <a
+                                    href={`/agents/${agent.id}`}
+                                    class="mt-5 inline-flex w-full items-center justify-center rounded-xl border border-slate-300 bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-200"
+                                >
+                                    Voir ses offres
+                                </a>
+                            </article>
+                        ))}
+                    </div>
+                )
+            }
+        </div>
+    </section>
+</Layout>

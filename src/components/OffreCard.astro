@@ -17,7 +17,7 @@ const nextFavoriValue = isFavori ? "false" : "true";
             height={420}
             className="h-full w-full object-cover"
         />
-        <form action="/offres" method="POST" class="absolute left-4 top-4 z-10">
+        <form action="/offres" method="POST" class="z-10">
             <input type="hidden" name="toggleFavoriId" value={offre.id} />
             <input
                 type="hidden"
@@ -26,9 +26,16 @@ const nextFavoriValue = isFavori ? "false" : "true";
             />
             <button
                 type="submit"
-                class={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold cursor-pointer ${isFavori ? "bg-green-600 text-white" : "bg-white/90 text-slate-700"}`}
+                class="favoriteButton absolute bottom-0 left-0 inline-flex items-center gap-2 p-2 text-white rounded-tr-lg"
+                data-offre={JSON.stringify(offre)}
             >
-                {isFavori ? "★ Favoris" : "☆ Favoris"}
+                <img
+                    src={isFavori ? "/favorite_filled.png" : "/favorite.png"}
+                    alt="favori"
+                    class="w-6 h-6"
+                    loading="lazy"
+                    decoding="async"
+                />
             </button>
         </form>
     </div>
@@ -94,7 +101,15 @@ const nextFavoriValue = isFavori ? "false" : "true";
                 <button
                     type="submit"
                     class="inline-flex w-full items-center justify-center rounded-xl border border-green-600/20 bg-green-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 cursor-pointer"
+                    data-offre={JSON.stringify(offre)}
                 >
+                    <img
+                        src={isFavori ? "/favorite_filled.png" : "/favorite.png"}
+                        alt="favori"
+                        class="h-4 w-4"
+                        loading="lazy"
+                        decoding="async"
+                    />
                     {isFavori ? "★ Favoris" : "☆ Favoris"}
                 </button>
             </form>
