@@ -32,11 +32,12 @@ const nextFavoriValue = isFavori ? "false" : "true";
                 <img
                     src={isFavori ? "/favorite_filled.png" : "/favorite.png"}
                     alt="favori"
+                    id="favorite-icon"
                     class="w-6 h-6"
                     loading="lazy"
                     decoding="async"
                 />
-            </button>
+               
         </form>
     </div>
 
@@ -100,19 +101,55 @@ const nextFavoriValue = isFavori ? "false" : "true";
                 />
                 <button
                     type="submit"
-                    class="inline-flex w-full items-center justify-center rounded-xl border border-green-600/20 bg-green-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 cursor-pointer"
+                    class="favoriteButton inline-flex w-full items-center justify-center rounded-xl border border-green-600/20 bg-green-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 cursor-pointer"
                     data-offre={JSON.stringify(offre)}
                 >
                     <img
-                        src={isFavori ? "/favorite_filled.png" : "/favorite.png"}
+                        src={isFavori
+                            ? "/favorite_filled.png"
+                            : "/favorite.png"}
                         alt="favori"
+                        id="favorite-icon"
                         class="h-4 w-4"
                         loading="lazy"
                         decoding="async"
                     />
-                    {isFavori ? "★ Favoris" : "☆ Favoris"}
+                    <span>Ajouter a mes favoris</span>
                 </button>
             </form>
         </div>
     </div>
 </article>
+
+<script>
+    //@ts-nocheck
+    import { setFavori } from "../../backend.js";
+    const favoriteButtons = document.querySelectorAll(".favoriteButton");
+
+    favoriteButtons.forEach((button) => {
+        button.addEventListener("click", async (event) => {
+            event.preventDefault();
+
+            const offreData = JSON.parse(button.dataset.offre || "{}");
+            const newFavori = !Boolean(offreData.favori ?? offreData.favoris);
+
+            await setFavori(offreData);
+
+            const favIcon = button.querySelector("#favorite-icon");
+            if (favIcon) {
+                favIcon.src = newFavori
+                    ? "/favorite_filled.png"
+                    : "/favorite.png";
+            }
+
+            offreData.favori = newFavori;
+            offreData.favoris = newFavori;
+            button.dataset.offre = JSON.stringify(offreData);
+
+            const card = button.closest(".offre-card");
+            if (card) {
+                card.dataset.favori = String(newFavori);
+            }
+        });
+    });
+</script>

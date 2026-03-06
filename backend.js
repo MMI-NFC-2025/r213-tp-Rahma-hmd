@@ -69,3 +69,14 @@ export async function updateFavori(offreId, favoriValue) {
         };
     }
 }
+
+export async function setFavori(house) {
+    const nextFavori = !Boolean(house?.favori ?? house?.favoris);
+    const payload = {};
+
+    if ('favori' in house) payload.favori = nextFavori;
+    if ('favoris' in house) payload.favoris = nextFavori;
+    if (Object.keys(payload).length === 0) payload.favori = nextFavori;
+
+    await pb.collection('Maison').update(house.id, payload);
+}
