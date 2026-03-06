@@ -30,8 +30,23 @@ export async function getOffreByPrix(p) {
 }
 
 
-export async function addOffre(house) {
+export async function addOffre(formData) {
     try {
+        // Mapper les champs du formulaire vers les champs PocketBase
+        const house = {
+            Nom: formData.get('nomMaison'),
+            Prix: formData.get('prix') ? Number(formData.get('prix')) : null,
+            nb_sdb: formData.get('nb_sdb') ? Number(formData.get('nb_sdb')) : null,
+            nb_chambre: formData.get('nb_chambre') ? Number(formData.get('nb_chambre')) : null,
+            superficie: formData.get('superficie') ? Number(formData.get('superficie')) : null,
+        };
+
+        // Ajouter l'image si présente
+        const imageFile = formData.get('image');
+        if (imageFile && imageFile.size > 0) {
+            house.image = imageFile;
+        }
+
         await pb.collection('Maison').create(house);
         return {
             success: true,
